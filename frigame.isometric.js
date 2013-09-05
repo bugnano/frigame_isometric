@@ -35,14 +35,32 @@
 		SCREEN_POSTFIX = '_screen'
 	;
 
-	function screenFromGrid(x, y) {
-		var
-			screen_x = x - y,
-			screen_y = (x + y) / 2
-		;
+	// ******************************************************************** //
+	// ******************************************************************** //
+	// ******************************************************************** //
+	// ******************************************************************** //
+	// ******************************************************************** //
 
-		return [screen_x, screen_y];
-	}
+	// Functions for coordinate conversion
+	$.extend(fg, {
+		screenFromGrid: function (x, y) {
+			var
+				screen_x = x - y,
+				screen_y = (x + y) / 2
+			;
+
+			return [screen_x, screen_y];
+		},
+
+		gridFromScreen: function (x, y) {
+			var
+				grid_x = y + (x / 2),
+				grid_y = y - (x / 2)
+			;
+
+			return [grid_x, grid_y];
+		}
+	});
 
 	// ******************************************************************** //
 	// ******************************************************************** //
@@ -315,7 +333,7 @@
 			}
 
 			// Step 1: Calculate the screen object position
-			screen = screenFromGrid(this.left + this.referencex, this.top + this.referencey);
+			screen = fg.screenFromGrid(this.left + this.referencex, this.top + this.referencey);
 			screen_x = round(screen[0]);
 			screen_y = round(screen[1]);
 
