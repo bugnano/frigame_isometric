@@ -31,6 +31,7 @@
 		baseSprite = fg.PSprite,
 		baseSpriteGroup = fg.PSpriteGroup,
 		myBaseISOSprite,
+		isoGroupMakers,
 		SCREEN_PREFIX = 'friGame_iso_',
 		SCREEN_POSTFIX = '_screen'
 	;
@@ -261,34 +262,6 @@
 			this.originy = fg.truncate(originy);
 
 			return this;
-		},
-
-		addISOGroup: function (name, options) {
-			var
-				new_options = options || {},
-				group
-			;
-
-			new_options.method = 'add';
-			group = fg.ISOSpriteGroup(name, options, this.name);
-
-			this.layers.push({name: name, obj: group});
-
-			return group;
-		},
-
-		insertISOGroup: function (name, options) {
-			var
-				new_options = options || {},
-				group
-			;
-
-			new_options.method = 'insert';
-			group = fg.ISOSpriteGroup(name, options, this.name);
-
-			this.layers.unshift({name: name, obj: group});
-
-			return group;
 		},
 
 		sortLayers: function () {
@@ -848,7 +821,7 @@
 			;
 
 			new_options.method = 'add';
-			sprite = fg.ISOSprite(name, options, this.name);
+			sprite = fg.ISOSprite(name, new_options, this.name);
 
 			this.layers.push({name: name, obj: sprite});
 
@@ -862,39 +835,11 @@
 			;
 
 			new_options.method = 'insert';
-			sprite = fg.ISOSprite(name, options, this.name);
+			sprite = fg.ISOSprite(name, new_options, this.name);
 
 			this.layers.unshift({name: name, obj: sprite});
 
 			return this;
-		},
-
-		addISOGroup: function (name, options) {
-			var
-				new_options = options || {},
-				group
-			;
-
-			new_options.method = 'add';
-			group = fg.ISOSpriteGroup(name, options, this.name);
-
-			this.layers.push({name: name, obj: group});
-
-			return group;
-		},
-
-		insertISOGroup: function (name, options) {
-			var
-				new_options = options || {},
-				group
-			;
-
-			new_options.method = 'insert';
-			group = fg.ISOSpriteGroup(name, options, this.name);
-
-			this.layers.unshift({name: name, obj: group});
-
-			return group;
 		},
 
 		end: function () {
@@ -1027,26 +972,65 @@
 
 	fg.ISOTilemap = fg.Maker(fg.PISOTilemap);
 
-	$.extend(fg.PISOSpriteGroup, {
+	isoGroupMakers = {
+		addISOGroup: function (name, options) {
+			var
+				new_options = options || {},
+				group
+			;
+
+			new_options.method = 'add';
+			group = fg.ISOSpriteGroup(name, new_options, this.name);
+
+			this.layers.push({name: name, obj: group});
+
+			return group;
+		},
+
+		insertISOGroup: function (name, options) {
+			var
+				new_options = options || {},
+				group
+			;
+
+			new_options.method = 'insert';
+			group = fg.ISOSpriteGroup(name, new_options, this.name);
+
+			this.layers.unshift({name: name, obj: group});
+
+			return group;
+		},
+
 		addISOTilemap: function (name, tileDescription, animationList, options) {
 			var
-				tilemap = fg.ISOTilemap(name, tileDescription, animationList, options, this.name)
+				new_options = options || {},
+				tilemap
 			;
+
+			new_options.method = 'add';
+			tilemap = fg.ISOTilemap(name, tileDescription, animationList, new_options, this.name);
 
 			this.layers.push({name: name, obj: tilemap});
 
-			return this;
+			return tilemap;
 		},
 
 		insertISOTilemap: function (name, tileDescription, animationList, options) {
 			var
-				tilemap = fg.ISOTilemap(name, tileDescription, animationList, options, this.name)
+				new_options = options || {},
+				tilemap
 			;
+
+			new_options.method = 'add';
+			tilemap = fg.ISOTilemap(name, tileDescription, animationList, new_options, this.name);
 
 			this.layers.unshift({name: name, obj: tilemap});
 
-			return this;
+			return tilemap;
 		}
-	});
+	};
+
+	$.extend(fg.PISOSpriteGroup, isoGroupMakers);
+	$.extend(fg.PSpriteGroup, isoGroupMakers);
 }(jQuery, friGame));
 

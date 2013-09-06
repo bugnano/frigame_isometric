@@ -56,27 +56,23 @@ $(() ->
 	fg.startGame(() ->
 		fg.playground()
 			.addGroup('my-group', {left: 512, top: 64})
-				.addISOGroup('floor-group')
-					.addISOTilemap('floor-tilemap', floorTiles, animationList)
+				.addISOTilemap('floor-tilemap', floorTiles, animationList)
 				.end()
-				.addISOGroup('object-group')
-					.addISOTilemap('object-tilemap', objectTiles, animationList)
+				.addISOTilemap('object-tilemap', objectTiles, animationList)
+					.addISOSprite('knight', {
+						centerx: 256
+						centery: 256
+						radius: 32
+						animation: 'knight'
+						rate: 100
+					})
 				.end()
 			.end()
-
-		fg.s['object-tilemap'].addISOSprite('knight', {
-			centerx: 256
-			centery: 256
-			radius: 32
-			animation: 'knight'
-			rate: 100
-		})
 
 		$('#playground').mousedown((e) ->
 			playground_offset = $('#playground').offset()
 			clicked_x = e.pageX - playground_offset.left
 			clicked_y = e.pageY - playground_offset.top
-			console.log([clicked_x, clicked_y])
 			iso_offsetx = fg.s['my-group'].left
 			iso_offsety = fg.s['my-group'].top
 
