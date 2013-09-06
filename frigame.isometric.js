@@ -614,7 +614,7 @@
 			;
 
 			// The animation callback associated with the screen sprite is bound to the isometric object
-			if (new_options.callback !== undefined) {
+			if (new_options.callback) {
 				old_callback = new_options.callback;
 				new_options.callback = function () {
 					old_callback.call(that, that);
@@ -887,20 +887,19 @@
 			var
 				my_options,
 				new_options = options || {},
-				round = fg.truncate,
 				sizex = tileDescription.sizex,
 				sizey = tileDescription.sizey,
 				tileSize = tileDescription.tileSize,
 				data = tileDescription.data,
 				len_data = data.length,
-				halfSize = round(tileSize / 2),
 				animation_options,
 				sprite_options,
 				sprite_name,
-				referencex,
-				referencey,
+				sprite_obj,
 				row = 0,
 				col = 0,
+				left = 0,
+				top = 0,
 				i
 			;
 
@@ -915,11 +914,11 @@
 			// animationList
 			// {
 			// 1: {animation: name} # The object literal passed to setAnimation (MUST have at least animation: name)
-			// 3: {animation: name} # The object literal passed to setAnimation (MUST have at least animation: name)
+			// 3: {animation: name, createCallback: func} # The object literal passed to setAnimation (MUST have at least animation: name)
 			// }
 
 			// sprite_name
-			// name + '_' + col + '_' + row
+			// name + '_' + row + '_' + col
 
 			if (this.options) {
 				my_options = this.options;
@@ -936,35 +935,31 @@
 			for (i = 0; i < len_data; i += 1) {
 				animation_options = animationList[data[i]];
 				if (animation_options) {
-					if (animation_options.referencex !== undefined) {
-						referencex = round(animation_options.referencex);
-					} else {
-						referencex = halfSize;
-					}
-
-					if (animation_options.referencey !== undefined) {
-						referencey = round(animation_options.referencey);
-					} else {
-						referencey = halfSize;
-					}
-
 					sprite_options = Object.create(animation_options);
 					$.extend(sprite_options, {
-						left: (col * tileSize) + (halfSize - referencex),
-						top: (row * tileSize) + (halfSize - referencey),
+						left: left,
+						top: top,
 						width: tileSize,
 						height: tileSize
 					});
 
-					sprite_name = [name, col, row].join('_');
+					sprite_name = [name, row, col].join('_');
 
 					this.addISOSprite(sprite_name, sprite_options);
+
+					if (animation_options.createCallback) {
+						sprite_obj = fg.s[sprite_name];
+						animation_options.createCallback.call(sprite_obj, sprite_obj);
+					}
 				}
 
+				left += tileSize;
 				col += 1;
 				if (col >= sizex) {
 					col = 0;
+					left = 0;
 					row += 1;
+					top += tileSize;
 				}
 			}
 		}
