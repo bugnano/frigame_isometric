@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os
+import functools
 
 from livereload.task import Task
 from livereload.compiler import CommandCompiler
@@ -8,7 +9,7 @@ from livereload.compiler import CommandCompiler
 
 def coffee(path, output):
 	def _compile():
-		c = CommandCompiler(path)
+		c = CommandCompiler()
 		f = open(path)
 		code = f.read()
 		f.close()
@@ -18,13 +19,10 @@ def coffee(path, output):
 	return _compile
 
 
-def sass(path, output):
-	def _compile():
-		c = CommandCompiler(path)
-		c.init_command('sass')
-		c.write(output)
-
-	return _compile
+def sass(path, output, mode='w'):
+	_compile = CommandCompiler(path)
+	_compile.init_command('sass')
+	return functools.partial(_compile, output, mode)
 
 
 for root, dirs, files in os.walk(os.getcwd()):
