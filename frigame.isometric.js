@@ -200,19 +200,49 @@
 	// ******************************************************************** //
 
 	// Functions for depth sorting of the sprites in the isometric views
-	function compareOrigins(a, b) {
+	function stableSort(a, b) {
 		var
-			a_obj = a.obj,
-			b_obj = b.obj,
-			ya = a_obj.top + a_obj.originy + a_obj.elevation,
-			yb = b_obj.top + b_obj.originy + b_obj.elevation
+			a_value = a.value,
+			b_value = b.value
 		;
 
-		return (ya - yb);
+		if (a_value === b_value) {
+			return (a.index - b.index);
+		}
+
+		return (a_value - b_value);
 	}
 
 	function sortLayers() {
-		this.layers.sort(compareOrigins);
+		var
+			i,
+			obj,
+			y,
+			layers = this.layers,
+			len_layers = layers.length,
+			map = [],
+			result = []
+		;
+
+		// Map the layers index and y value before sorting
+		for (i = 0; i < len_layers; i += 1) {
+			obj = layers[i].obj;
+			y = obj.top + obj.originy + obj.elevation;
+			map.push({
+				index: i,
+				value: y
+			});
+		}
+
+		// Sort the map
+		map.sort(stableSort);
+
+		// Copy the values in the right order
+		for (i = 0; i < len_layers; i += 1) {
+			result.push(layers[map[i].index]);
+		}
+
+		this.layers = result;
 
 		return this;
 	}
