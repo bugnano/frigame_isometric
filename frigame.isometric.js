@@ -201,16 +201,7 @@
 
 	// Functions for depth sorting of the sprites in the isometric views
 	function stableSort(a, b) {
-		var
-			a_value = a.value,
-			b_value = b.value
-		;
-
-		if (a_value === b_value) {
-			return (a.index - b.index);
-		}
-
-		return (a_value - b_value);
+		return ((a.value - b.value) || (a.index - b.index));
 	}
 
 	function sortLayers() {
@@ -262,7 +253,11 @@
 			this.originx = round(new_options.originx || 0);
 			this.originy = round(new_options.originy || 0);
 			this.elevation = round(new_options.elevation || 0);
+
+			this.needsSorting = false;
 		},
+
+		// Public functions
 
 		setOrigin: function (originx, originy) {
 			var
@@ -297,6 +292,17 @@
 		sortLayers: function () {
 			// sortLayers is a dummy function for regular sprite groups
 			return this;
+		},
+
+		// Implementation details
+
+		draw: function () {
+			if (this.needsSorting) {
+				this.needsSorting = false;
+				this.sortLayers();
+			}
+
+			baseSpriteGroup.draw.call(this);
 		}
 	});
 
@@ -347,7 +353,7 @@
 			});
 
 			// Step 3: Sort the screen object parent layer
-			fg.s[screen_obj.parent].sortLayers(screen_name);
+			fg.s[screen_obj.parent].needsSorting = true;
 
 			return this;
 		},
