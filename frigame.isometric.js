@@ -358,50 +358,50 @@
 			return this;
 		},
 
-		moveFirst: function () {
-			baseBaseSprite.moveFirst.call(this);
+		drawFirst: function () {
+			baseBaseSprite.drawFirst.call(this);
 
-			fg.s[this.screen_name].moveFirst();
-
-			return this;
-		},
-
-		moveLast: function () {
-			baseBaseSprite.moveLast.call(this);
-
-			fg.s[this.screen_name].moveLast();
+			fg.s[this.screen_name].drawFirst();
 
 			return this;
 		},
 
-		moveTo: function (index) {
-			baseBaseSprite.moveTo.call(this, index);
+		drawLast: function () {
+			baseBaseSprite.drawLast.call(this);
 
-			fg.s[this.screen_name].moveTo(index);
+			fg.s[this.screen_name].drawLast();
 
 			return this;
 		},
 
-		moveBefore: function (name) {
+		drawTo: function (index) {
+			baseBaseSprite.drawTo.call(this, index);
+
+			fg.s[this.screen_name].drawTo(index);
+
+			return this;
+		},
+
+		drawBefore: function (name) {
 			var
 				screen_obj = fg.s[name] || {}
 			;
 
-			baseBaseSprite.moveBefore.call(this, name);
+			baseBaseSprite.drawBefore.call(this, name);
 
-			fg.s[this.screen_name].moveBefore(screen_obj.screen_name);
+			fg.s[this.screen_name].drawBefore(screen_obj.screen_name);
 
 			return this;
 		},
 
-		moveAfter: function (name) {
+		drawAfter: function (name) {
 			var
 				screen_obj = fg.s[name] || {}
 			;
 
-			baseBaseSprite.moveAfter.call(this, name);
+			baseBaseSprite.drawAfter.call(this, name);
 
-			fg.s[this.screen_name].moveAfter(screen_obj.screen_name);
+			fg.s[this.screen_name].drawAfter(screen_obj.screen_name);
 
 			return this;
 		},
@@ -776,6 +776,7 @@
 				layers = this.layers,
 				len_layers = layers.length,
 				layer,
+				layer_obj,
 				retval,
 				i
 			;
@@ -784,7 +785,8 @@
 				for (i = 0; i < len_layers; i += 1) {
 					layer = layers[i];
 					if (layer) {
-						retval = callback.call(layer.obj, layer.name);
+						layer_obj = layer.obj;
+						retval = callback.call(layer_obj, layer_obj);
 						if (retval) {
 							break;
 						}
