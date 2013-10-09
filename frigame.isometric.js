@@ -188,6 +188,36 @@
 			}
 
 			baseSprite.setAnimation.apply(this, arguments);
+		},
+
+		setOrigin: function (originx, originy) {
+			var
+				round = fg.truncate,
+				new_originx = round(originx)
+			;
+
+			this.originx = new_originx;
+
+			if (originy === undefined) {
+				// If originy isn't specified, it is assumed to be equal to originx.
+				this.originy = new_originx;
+			} else {
+				this.originy = round(originy);
+			}
+
+			return this;
+		},
+
+		setOriginx: function (originx) {
+			this.originx = fg.truncate(originx);
+
+			return this;
+		},
+
+		setOriginy: function (originy) {
+			this.originy = fg.truncate(originy);
+
+			return this;
 		}
 	});
 
@@ -326,15 +356,14 @@
 				screen,
 				screen_x,
 				screen_y,
-				screen_name = this.screen_name,
-				screen_obj = fg.s[screen_name],
+				screen_obj = fg.s[this.screen_name],
 				round = fg.truncate
 			;
 
 			baseBaseSprite.move.call(this, options);
 
 			if (new_options.elevation !== undefined) {
-				elevation = new_options.elevation;
+				elevation = round(new_options.elevation);
 				this.elevation = elevation;
 				screen_obj.elevation = elevation;
 			} else {
@@ -354,6 +383,24 @@
 
 			// Step 3: Sort the screen object parent layer
 			fg.s[screen_obj.parent].needsSorting = true;
+
+			return this;
+		},
+
+		setElevation: function (elevation) {
+			var
+				old_elevation = this.elevation,
+				screen_obj = fg.s[this.screen_name]
+			;
+
+			elevation = fg.truncate(elevation);
+
+			this.elevation = elevation;
+			screen_obj.elevation = elevation;
+
+			screen_obj.move({
+				top: screen_obj.top - (elevation - old_elevation)
+			});
 
 			return this;
 		},
@@ -402,6 +449,49 @@
 			baseBaseSprite.drawAfter.call(this, name);
 
 			fg.s[this.screen_name].drawAfter(screen_obj.screen_name);
+
+			return this;
+		},
+
+		setOrigin: function (originx, originy) {
+			var
+				screen_obj = fg.s[this.screen_name]
+			;
+
+			screen_obj.setOrigin(originx, originy);
+
+			this.originx = screen_obj.originx;
+			this.originy = screen_obj.originy;
+
+			this.move();
+
+			return this;
+		},
+
+		setOriginx: function (originx) {
+			var
+				screen_obj = fg.s[this.screen_name]
+			;
+
+			screen_obj.setOriginx(originx);
+
+			this.originx = screen_obj.originx;
+
+			this.move();
+
+			return this;
+		},
+
+		setOriginy: function (originy) {
+			var
+				screen_obj = fg.s[this.screen_name]
+			;
+
+			screen_obj.setOriginy(originy);
+
+			this.originy = screen_obj.originy;
+
+			this.move();
 
 			return this;
 		},
@@ -618,7 +708,7 @@
 			this.referencex = round(new_options.referencex);
 			this.referencey = round(new_options.referencey);
 
-			this.elevation = fg.truncate(new_options.elevation || 0);
+			this.elevation = round(new_options.elevation || 0);
 
 			// Call setAnimation in order to place the screen object correctly
 			this.setAnimation(new_options);
@@ -741,7 +831,7 @@
 			this.referencex = round(new_options.referencex || 0);
 			this.referencey = round(new_options.referencey || 0);
 
-			this.elevation = fg.truncate(new_options.elevation || 0);
+			this.elevation = round(new_options.elevation || 0);
 
 			// Call resize in order to place the screen object correctly
 			this.resize(new_options);
@@ -805,49 +895,6 @@
 
 			// TO DO -- Is it of any use to resize also the screen object?
 			//fg.s[this.screen_name].resize(options);
-
-			return this;
-		},
-
-		setOrigin: function (originx, originy) {
-			var
-				screen_obj = fg.s[this.screen_name]
-			;
-
-			screen_obj.setOrigin(originx, originy);
-
-			this.originx = screen_obj.originx;
-			this.originy = screen_obj.originy;
-
-			this.move();
-
-			return this;
-		},
-
-		setOriginx: function (originx) {
-			var
-				screen_obj = fg.s[this.screen_name]
-			;
-
-			screen_obj.setOriginx(originx);
-
-			this.originx = screen_obj.originx;
-
-			this.move();
-
-			return this;
-		},
-
-		setOriginy: function (originy) {
-			var
-				screen_obj = fg.s[this.screen_name]
-			;
-
-			screen_obj.setOriginy(originy);
-
-			this.originy = screen_obj.originy;
-
-			this.move();
 
 			return this;
 		},
