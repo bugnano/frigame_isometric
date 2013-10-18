@@ -110,13 +110,13 @@
 
 			baseAnimation.onLoad.apply(this, arguments);
 
-			// If the origin is not specified it defaults to the center of the image
+			// If the origin is not specified it defaults to the bottom center of the frame
 			if (options.originx === null) {
 				options.originx = options.halfWidth;
 			}
 
 			if (options.originy === null) {
-				options.originy = options.halfHeight;
+				options.originy = options.frameHeight;
 			}
 
 			this.originx = round(options.originx);

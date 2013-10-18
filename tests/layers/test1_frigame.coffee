@@ -8,8 +8,6 @@ $(() ->
 		.addAnimation('block', 'tile.png', {originx: 64, originy: 96})
 		.addAnimation('ice', 'ice.png', {originx: 64, originy: 118})
 		.addAnimation('knight', 'knight_se.png', {
-			originx: 64
-			originy: 128
 			numberOfFrame: 8
 		})
 
