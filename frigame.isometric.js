@@ -26,11 +26,7 @@
 
 (function ($, fg) {
 	var
-		baseAnimation = fg.PAnimation,
-		baseBaseSprite = fg.PBaseSprite,
-		baseSprite = fg.PSprite,
-		baseSpriteGroup = fg.PSpriteGroup,
-		myBaseISOSprite,
+		overrides = {},
 		isoGroupMakers,
 		SCREEN_PREFIX = 'friGame_iso_',
 		SCREEN_POSTFIX = '_screen'
@@ -70,7 +66,12 @@
 	// ******************************************************************** //
 
 	// Extend the Animation object in order to support originx and originy
-	fg.PAnimation = Object.create(baseAnimation);
+
+	overrides.PAnimation = fg.pick(fg.PAnimation, [
+		'init',
+		'onLoad'
+	]);
+
 	$.extend(fg.PAnimation, {
 		init: function (imageURL, options) {
 			var
@@ -85,7 +86,7 @@
 				this.options = my_options;
 			}
 
-			baseAnimation.init.apply(this, arguments);
+			overrides.PAnimation.init.apply(this, arguments);
 
 			// Set default options
 			$.extend(my_options, {
@@ -108,7 +109,7 @@
 				round = fg.truncate
 			;
 
-			baseAnimation.onLoad.apply(this, arguments);
+			overrides.PAnimation.onLoad.apply(this, arguments);
 
 			// If the origin is not specified it defaults to the bottom center of the frame
 			if (options.originx === null) {
@@ -124,8 +125,6 @@
 		}
 	});
 
-	fg.Animation = fg.Maker(fg.PAnimation);
-
 	// ******************************************************************** //
 	// ******************************************************************** //
 	// ******************************************************************** //
@@ -133,7 +132,12 @@
 	// ******************************************************************** //
 
 	// Extend the Sprite object in order to support originx and originy
-	fg.PSprite = Object.create(baseSprite);
+
+	overrides.PSprite = fg.pick(fg.PSprite, [
+		'init',
+		'setAnimation'
+	]);
+
 	$.extend(fg.PSprite, {
 		init: function (name, options, parent) {
 			var
@@ -145,7 +149,7 @@
 			this.originy = round(new_options.originy || 0);
 			this.elevation = round(new_options.elevation || 0);
 
-			baseSprite.init.apply(this, arguments);
+			overrides.PSprite.init.apply(this, arguments);
 		},
 
 		setAnimation: function (options) {
@@ -187,7 +191,7 @@
 				}
 			}
 
-			baseSprite.setAnimation.apply(this, arguments);
+			overrides.PSprite.setAnimation.apply(this, arguments);
 		},
 
 		setOrigin: function (originx, originy) {
@@ -220,8 +224,6 @@
 			return this;
 		}
 	});
-
-	fg.Sprite = fg.Maker(fg.PSprite);
 
 	// ******************************************************************** //
 	// ******************************************************************** //
@@ -269,7 +271,12 @@
 	}
 
 	// Extend the Sprite Group object in order to know whether a new group is added or inserted
-	fg.PSpriteGroup = Object.create(baseSpriteGroup);
+
+	overrides.PSpriteGroup = fg.pick(fg.PSpriteGroup, [
+		'init',
+		'draw'
+	]);
+
 	$.extend(fg.PSpriteGroup, {
 		init: function (name, options, parent) {
 			var
@@ -277,7 +284,7 @@
 				round = fg.truncate
 			;
 
-			baseSpriteGroup.init.apply(this, arguments);
+			overrides.PSpriteGroup.init.apply(this, arguments);
 
 			// If the origin is not specified it defaults to the top left of the image
 			this.originx = round(new_options.originx || 0);
@@ -332,20 +339,17 @@
 				this.sortLayers();
 			}
 
-			baseSpriteGroup.draw.call(this);
+			overrides.PSpriteGroup.draw.call(this);
 		}
 	});
 
-	fg.SpriteGroup = fg.Maker(fg.PSpriteGroup);
-
 	// ******************************************************************** //
 	// ******************************************************************** //
 	// ******************************************************************** //
 	// ******************************************************************** //
 	// ******************************************************************** //
 
-	myBaseISOSprite = Object.create(baseBaseSprite);
-	fg.PBaseISOSprite = myBaseISOSprite;
+	fg.PBaseISOSprite = Object.create(fg.PBaseSprite);
 	$.extend(fg.PBaseISOSprite, {
 		// Public functions
 
@@ -360,7 +364,7 @@
 				round = fg.truncate
 			;
 
-			baseBaseSprite.move.call(this, options);
+			fg.PBaseSprite.move.call(this, options);
 
 			if (new_options.elevation !== undefined) {
 				elevation = round(new_options.elevation);
@@ -406,7 +410,7 @@
 		},
 
 		drawFirst: function () {
-			baseBaseSprite.drawFirst.call(this);
+			fg.PBaseSprite.drawFirst.call(this);
 
 			fg.s[this.screen_name].drawFirst();
 
@@ -414,7 +418,7 @@
 		},
 
 		drawLast: function () {
-			baseBaseSprite.drawLast.call(this);
+			fg.PBaseSprite.drawLast.call(this);
 
 			fg.s[this.screen_name].drawLast();
 
@@ -422,7 +426,7 @@
 		},
 
 		drawTo: function (index) {
-			baseBaseSprite.drawTo.call(this, index);
+			fg.PBaseSprite.drawTo.call(this, index);
 
 			fg.s[this.screen_name].drawTo(index);
 
@@ -434,7 +438,7 @@
 				screen_obj = fg.s[name] || {}
 			;
 
-			baseBaseSprite.drawBefore.call(this, name);
+			fg.PBaseSprite.drawBefore.call(this, name);
 
 			fg.s[this.screen_name].drawBefore(screen_obj.screen_name);
 
@@ -446,7 +450,7 @@
 				screen_obj = fg.s[name] || {}
 			;
 
-			baseBaseSprite.drawAfter.call(this, name);
+			fg.PBaseSprite.drawAfter.call(this, name);
 
 			fg.s[this.screen_name].drawAfter(screen_obj.screen_name);
 
@@ -624,9 +628,7 @@
 
 		// Implementation details
 
-		draw: function () {
-			// The drawing is performed only on the screen objects
-		}
+		draw: $.noop	// The drawing is performed only on the screen objects
 	});
 
 	// ******************************************************************** //
@@ -635,7 +637,7 @@
 	// ******************************************************************** //
 	// ******************************************************************** //
 
-	fg.PISOSprite = Object.create(myBaseISOSprite);
+	fg.PISOSprite = Object.create(fg.PBaseISOSprite);
 	$.extend(fg.PISOSprite, {
 		init: function (name, options, parent) {
 			var
@@ -684,7 +686,7 @@
 
 			screen_obj = fg.s[screen_name];
 
-			myBaseISOSprite.init.apply(this, arguments);
+			fg.PBaseISOSprite.init.apply(this, arguments);
 
 			// If the animation has not been defined, force
 			// the animation to null in order to resize and move
@@ -719,11 +721,11 @@
 		remove: function () {
 			fg.s[this.screen_name].remove();
 
-			myBaseISOSprite.remove.apply(this, arguments);
+			fg.PBaseISOSprite.remove.apply(this, arguments);
 		},
 
 		resize: function (options) {
-			myBaseISOSprite.resize.call(this, options);
+			fg.PBaseISOSprite.resize.call(this, options);
 
 			// The screen object cannot be resized
 
@@ -768,7 +770,7 @@
 	// ******************************************************************** //
 	// ******************************************************************** //
 
-	fg.PISOSpriteGroup = Object.create(myBaseISOSprite);
+	fg.PISOSpriteGroup = Object.create(fg.PBaseISOSprite);
 	$.extend(fg.PISOSpriteGroup, {
 		init: function (name, options, parent) {
 			var
@@ -820,7 +822,7 @@
 			// The screen sprite group must depth sort its layers
 			screen_obj.sortLayers = sortLayers;
 
-			myBaseISOSprite.init.apply(this, arguments);
+			fg.PBaseISOSprite.init.apply(this, arguments);
 
 			this.layers = [];
 
@@ -844,7 +846,7 @@
 
 			this.clear();
 
-			myBaseISOSprite.remove.apply(this, arguments);
+			fg.PBaseISOSprite.remove.apply(this, arguments);
 		},
 
 		clear: function () {
@@ -948,7 +950,7 @@
 				i
 			;
 
-			myBaseISOSprite.update.call(this);
+			fg.PBaseISOSprite.update.call(this);
 
 			for (i = 0; i < len_layers; i += 1) {
 				if (layers[i]) {

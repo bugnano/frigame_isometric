@@ -17,7 +17,7 @@ $(() ->
 		2: {animation: 'ice-floor'}
 		3: {animation: 'block'}
 		4: {animation: 'ice', createCallback: () ->
-			@.opacity(0.8)
+			@opacity(0.8)
 		}
 	}
 
