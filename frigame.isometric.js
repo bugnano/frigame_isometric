@@ -842,9 +842,9 @@
 		// Public functions
 
 		remove: function () {
-			fg.s[this.screen_name].remove();
-
 			this.clear();
+
+			fg.s[this.screen_name].remove();
 
 			fg.PBaseISOSprite.remove.apply(this, arguments);
 		},
@@ -854,11 +854,11 @@
 				layers = this.layers
 			;
 
-			fg.s[this.screen_name].clear();
-
 			while (layers.length) {
 				layers[0].obj.remove();
 			}
+
+			fg.s[this.screen_name].clear();
 
 			return this;
 		},
