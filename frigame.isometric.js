@@ -284,14 +284,15 @@
 				round = fg.truncate
 			;
 
-			overrides.PSpriteGroup.init.apply(this, arguments);
-
 			// If the origin is not specified it defaults to the top left of the image
 			this.originx = round(new_options.originx || 0);
 			this.originy = round(new_options.originy || 0);
 			this.elevation = round(new_options.elevation || 0);
 
 			this.needsSorting = false;
+
+			// Call the overridden function last, in order to have the callbacks called once the object has been fully initialized
+			overrides.PSpriteGroup.init.apply(this, arguments);
 		},
 
 		// Public functions
