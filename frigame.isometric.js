@@ -1115,5 +1115,50 @@
 
 	$.extend(fg.PISOSpriteGroup, isoGroupMakers);
 	$.extend(fg.PSpriteGroup, isoGroupMakers);
+
+	if (fg.fx) {
+		$.extend(fg.fx.hooks, {
+			elevation: {
+				get: function (s) {
+					return s.elevation;
+				},
+				set: function (s, value) {
+					s.setElevation(value);
+				}
+			},
+			originx: {
+				get: function (s) {
+					return s.originx;
+				},
+				set: function (s, value) {
+					s.setOriginx(value);
+				}
+			},
+			originy: {
+				get: function (s) {
+					return s.originy;
+				},
+				set: function (s, value) {
+					s.setOriginy(value);
+				}
+			},
+			referencex: {
+				get: function (s) {
+					return s.referencex;
+				},
+				set: function (s, value) {
+					s.setReferencex(value);
+				}
+			},
+			referencey: {
+				get: function (s) {
+					return s.referencey;
+				},
+				set: function (s, value) {
+					s.setReferencey(value);
+				}
+			}
+		});
+	}
 }(jQuery, friGame));
 
