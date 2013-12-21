@@ -720,7 +720,13 @@
 		// Public functions
 
 		remove: function () {
-			fg.s[this.screen_name].remove();
+			var
+				screen_name = this.screen_name
+			;
+
+			if (fg.s[screen_name]) {
+				fg.s[screen_name].remove();
+			}
 
 			fg.PBaseISOSprite.remove.apply(this, arguments);
 		},
@@ -843,23 +849,32 @@
 		// Public functions
 
 		remove: function () {
+			var
+				screen_name = this.screen_name
+			;
+
 			this.clear();
 
-			fg.s[this.screen_name].remove();
+			if (fg.s[screen_name]) {
+				fg.s[screen_name].remove();
+			}
 
 			fg.PBaseISOSprite.remove.apply(this, arguments);
 		},
 
 		clear: function () {
 			var
-				layers = this.layers
+				layers = this.layers,
+				screen_name = this.screen_name
 			;
 
 			while (layers.length) {
 				layers[0].obj.remove();
 			}
 
-			fg.s[this.screen_name].clear();
+			if (fg.s[screen_name]) {
+				fg.s[screen_name].clear();
+			}
 
 			return this;
 		},
