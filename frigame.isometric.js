@@ -768,6 +768,10 @@
 			this.resize(new_options);
 
 			return this;
+		},
+
+		getScreenRect: function () {
+			return fg.Rect(fg.s[this.screen_name]);
 		}
 	});
 
