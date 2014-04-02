@@ -771,7 +771,15 @@
 		},
 
 		getScreenRect: function () {
-			return fg.Rect(fg.s[this.screen_name]);
+			var
+				screen_obj = fg.s[this.screen_name],
+				screen_rect = fg.Rect(screen_obj)
+			;
+
+			screen_rect.originx = screen_obj.originx;
+			screen_rect.originy = screen_obj.originy;
+
+			return screen_rect;
 		}
 	});
 
