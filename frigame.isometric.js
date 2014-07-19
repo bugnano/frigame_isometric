@@ -1,4 +1,4 @@
-/*global jQuery, friGame */
+/*global friGame */
 /*jslint white: true, browser: true */
 
 // Copyright (c) 2011-2014 Franco Bugnano
@@ -24,7 +24,7 @@
 // Uses ideas and APIs inspired by:
 // gameQuery Copyright (c) 2008 Selim Arsever (gamequery.onaluf.org), licensed under the MIT
 
-(function ($, fg) {
+(function (fg) {
 	'use strict';
 
 	var
@@ -41,7 +41,7 @@
 	// ******************************************************************** //
 
 	// Functions for coordinate conversion
-	$.extend(fg, {
+	fg.extend(fg, {
 		screenFromGrid: function (x, y) {
 			var
 				screen_x = x - y,
@@ -74,7 +74,7 @@
 		'onLoad'
 	]);
 
-	$.extend(fg.PAnimation, {
+	fg.extend(fg.PAnimation, {
 		init: function (imageURL, options) {
 			var
 				my_options,
@@ -91,7 +91,7 @@
 			overrides.PAnimation.init.apply(this, arguments);
 
 			// Set default options
-			$.extend(my_options, {
+			fg.extend(my_options, {
 				// Public options
 				originx: null,
 				originy: null
@@ -99,7 +99,7 @@
 				// Implementation details
 			});
 
-			new_options = $.extend(my_options, fg.pick(new_options, [
+			new_options = fg.extend(my_options, fg.pick(new_options, [
 				'originx',
 				'originy'
 			]));
@@ -140,7 +140,7 @@
 		'setAnimation'
 	]);
 
-	$.extend(fg.PSprite, {
+	fg.extend(fg.PSprite, {
 		init: function (name, options, parent) {
 			var
 				new_options = options || {},
@@ -279,7 +279,7 @@
 		'draw'
 	]);
 
-	$.extend(fg.PSpriteGroup, {
+	fg.extend(fg.PSpriteGroup, {
 		init: function (name, options, parent) {
 			var
 				new_options = options || {},
@@ -353,7 +353,7 @@
 	// ******************************************************************** //
 
 	fg.PBaseISOSprite = Object.create(fg.PBaseSprite);
-	$.extend(fg.PBaseISOSprite, {
+	fg.extend(fg.PBaseISOSprite, {
 		// Public functions
 
 		move: function (options) {
@@ -631,7 +631,7 @@
 
 		// Implementation details
 
-		draw: $.noop	// The drawing is performed only on the screen objects
+		draw: fg.noop	// The drawing is performed only on the screen objects
 	});
 
 	// ******************************************************************** //
@@ -641,7 +641,7 @@
 	// ******************************************************************** //
 
 	fg.PISOSprite = Object.create(fg.PBaseISOSprite);
-	$.extend(fg.PISOSprite, {
+	fg.extend(fg.PISOSprite, {
 		init: function (name, options, parent) {
 			var
 				my_options,
@@ -661,7 +661,7 @@
 			}
 
 			// Set default options
-			$.extend(my_options, {
+			fg.extend(my_options, {
 				// Public options
 
 				// Implementation details
@@ -792,7 +792,7 @@
 	// ******************************************************************** //
 
 	fg.PISOSpriteGroup = Object.create(fg.PBaseISOSprite);
-	$.extend(fg.PISOSpriteGroup, {
+	fg.extend(fg.PISOSpriteGroup, {
 		init: function (name, options, parent) {
 			var
 				my_options,
@@ -812,7 +812,7 @@
 			}
 
 			// Set default options
-			$.extend(my_options, {
+			fg.extend(my_options, {
 				// Public options
 
 				// Implementation details
@@ -999,7 +999,7 @@
 	// ******************************************************************** //
 
 	fg.PISOTilemap = Object.create(fg.PISOSpriteGroup);
-	$.extend(fg.PISOTilemap, {
+	fg.extend(fg.PISOTilemap, {
 		init: function (name, tileDescription, animationList, options, parent) {
 			var
 				my_options,
@@ -1053,7 +1053,7 @@
 				animation_options = animationList[data[i]];
 				if (animation_options) {
 					sprite_options = Object.create(animation_options);
-					$.extend(sprite_options, {
+					fg.extend(sprite_options, {
 						left: left,
 						top: top,
 						width: tileSize,
@@ -1142,11 +1142,11 @@
 		}
 	};
 
-	$.extend(fg.PISOSpriteGroup, isoGroupMakers);
-	$.extend(fg.PSpriteGroup, isoGroupMakers);
+	fg.extend(fg.PISOSpriteGroup, isoGroupMakers);
+	fg.extend(fg.PSpriteGroup, isoGroupMakers);
 
 	if (fg.fx) {
-		$.extend(fg.fx.hooks, {
+		fg.extend(fg.fx.hooks, {
 			elevation: {
 				get: function (s) {
 					return s.elevation;
@@ -1189,5 +1189,5 @@
 			}
 		});
 	}
-}(jQuery, friGame));
+}(friGame));
 
