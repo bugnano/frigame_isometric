@@ -847,6 +847,9 @@
 
 			this.layers = [];
 
+			this.needsUpdate = true;
+			this.updateList = [];
+
 			this.originx = screen_obj.originx;
 			this.originy = screen_obj.originy;
 
@@ -973,18 +976,20 @@
 
 		// Implementation details
 
+		checkUpdate: fg.noop,
+
 		update: function () {
 			var
-				layers = this.layers,
-				len_layers = layers.length,
+				update_list = this.updateList,
+				len_update_list = update_list.length,
 				i
 			;
 
 			fg.PBaseISOSprite.update.call(this);
 
-			for (i = 0; i < len_layers; i += 1) {
-				if (layers[i]) {
-					layers[i].obj.update();
+			for (i = 0; i < len_update_list; i += 1) {
+				if (update_list[i]) {
+					update_list[i].obj.update();
 				}
 			}
 		}
@@ -1095,6 +1100,7 @@
 			group = fg.ISOSpriteGroup(name, new_options, this.name);
 
 			this.layers.push({name: name, obj: group});
+			this.updateList.push({name: name, obj: group});
 
 			return group;
 		},
@@ -1109,6 +1115,7 @@
 			group = fg.ISOSpriteGroup(name, new_options, this.name);
 
 			this.layers.unshift({name: name, obj: group});
+			this.updateList.unshift({name: name, obj: group});
 
 			return group;
 		},
@@ -1123,6 +1130,7 @@
 			tilemap = fg.ISOTilemap(name, tileDescription, animationList, new_options, this.name);
 
 			this.layers.push({name: name, obj: tilemap});
+			this.updateList.push({name: name, obj: tilemap});
 
 			return tilemap;
 		},
@@ -1137,6 +1145,7 @@
 			tilemap = fg.ISOTilemap(name, tileDescription, animationList, new_options, this.name);
 
 			this.layers.unshift({name: name, obj: tilemap});
+			this.updateList.unshift({name: name, obj: tilemap});
 
 			return tilemap;
 		}
