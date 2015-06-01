@@ -234,40 +234,68 @@
 	// ******************************************************************** //
 
 	// Functions for depth sorting of the sprites in the isometric views
-	function stableSort(a, b) {
-		return ((a.value - b.value) || (a.index - b.index));
-	}
-
 	function sortLayers() {
 		var
 			i,
-			obj,
+			j,
+			obj1,
+			obj2,
 			y,
 			layers = this.layers,
 			len_layers = layers.length,
-			map = [],
-			result = []
+			len_layers_3 = len_layers / 3,
+			gap,
+			temp1,
+			temp2
 		;
 
-		// Map the layers index and y value before sorting
+		// Save the drawing order of the layers in order to make a stable sort,
+		// and the computed y value, in order to speed up sorting
 		for (i = 0; i < len_layers; i += 1) {
-			obj = layers[i].obj;
-			y = obj.top + obj.originy + obj.elevation;
-			map.push({
-				index: i,
-				value: y
-			});
+			obj1 = layers[i].obj;
+			y = obj1.top + obj1.originy + obj1.elevation;
+			layers[i].obj.sort_y = y;
+			layers[i].obj.sort_i = i;
 		}
 
-		// Sort the map
-		map.sort(stableSort);
-
-		// Copy the values in the right order
-		for (i = 0; i < len_layers; i += 1) {
-			result.push(layers[map[i].index]);
+		// Generate Knuth's gap sequence
+		gap = 1;
+		while (gap < len_layers_3) {
+			gap = (3 * gap) + 1;
 		}
 
-		this.layers = result;
+		// Start with the largest gap and work down to a gap of 1
+		while (gap >= 1) {
+			// Do a gapped insertion sort for this gap size.
+			// The first gap elements a[0..gap-1] are already in gapped order
+			// keep adding one more element until the entire array is gap sorted
+			for (i = gap; i < len_layers; i += 1)
+			{
+				// add a[i] to the elements that have been gap sorted
+				// save a[i] in temp1 and make a hole at position i
+				temp1 = layers[i];
+				obj1 = temp1.obj;
+
+				// shift earlier gap-sorted elements up until the correct location for a[i] is found
+				j = i;
+				while (j >= gap) {
+					temp2 = layers[j - gap];
+					obj2 = temp2.obj;
+
+					if (!((obj2.sort_y > obj1.sort_y) || ((obj2.sort_y === obj1.sort_y) && (obj2.sort_i > obj1.sort_i)))) {
+						break;
+					}
+
+					layers[j] = temp2;
+					j -= gap;
+				}
+
+				// put temp1 (the original a[i]) in its correct location
+				layers[j] = temp1;
+			}
+
+			gap = (gap - 1) / 3;
+		}
 
 		return this;
 	}
