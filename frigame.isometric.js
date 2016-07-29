@@ -878,6 +878,8 @@
 			this.needsUpdate = true;
 			this.updateList = [];
 
+			this.clearing = false;
+
 			this.originx = screen_obj.originx;
 			this.originy = screen_obj.originy;
 
@@ -910,12 +912,21 @@
 		clear: function () {
 			var
 				layers = this.layers,
-				screen_name = this.screen_name
+				len_layers = layers.length,
+				screen_name = this.screen_name,
+				i
 			;
 
-			while (layers.length) {
-				layers[0].obj.remove();
+			this.clearing = true;
+
+			for (i = 0; i < len_layers; i += 1) {
+				layers[i].obj.remove();
 			}
+
+			this.clearing = false;
+
+			this.layers = [];
+			this.updateList = [];
 
 			if (fg.s[screen_name]) {
 				fg.s[screen_name].clear();
