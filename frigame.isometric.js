@@ -676,7 +676,7 @@
 				new_options = options || {},
 				sprite_options = Object.create(new_options),
 				parent_obj,
-				screen_name = [SCREEN_PREFIX, name, SCREEN_POSTFIX].join(''),
+				screen_name = SCREEN_PREFIX + name + SCREEN_POSTFIX,
 				screen_obj,
 				round = fg.truncate
 			;
@@ -827,7 +827,7 @@
 				new_options = options || {},
 				sprite_options = Object.create(new_options),
 				parent_obj,
-				screen_name = [SCREEN_PREFIX, name, SCREEN_POSTFIX].join(''),
+				screen_name = SCREEN_PREFIX + name + SCREEN_POSTFIX,
 				screen_obj,
 				round = fg.truncate
 			;
@@ -1104,7 +1104,7 @@
 						height: tileSize
 					});
 
-					sprite_name = [name, row, col].join('_');
+					sprite_name = name + '_' + row + '_' + col;
 
 					this.addISOSprite(sprite_name, sprite_options);
 
