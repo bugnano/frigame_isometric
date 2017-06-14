@@ -871,11 +871,10 @@
 			// The screen sprite group must depth sort its layers
 			screen_obj.sortLayers = sortLayers;
 
-			fg.PBaseISOSprite.init.apply(this, arguments);
-
 			this.layers = [];
 
-			this.needsUpdate = true;
+			fg.PBaseISOSprite.init.apply(this, arguments);
+
 			this.updateList = [];
 
 			this.clearing = false;
@@ -925,8 +924,10 @@
 
 			this.clearing = false;
 
-			this.layers = [];
-			this.updateList = [];
+			this.layers.splice(0, len_layers);
+			this.updateList.splice(0, this.updateList.length);
+
+			this.checkUpdate();
 
 			if (fg.s[screen_name]) {
 				fg.s[screen_name].clear();
@@ -984,6 +985,8 @@
 
 			this.layers.push({name: name, obj: sprite});
 
+			this.checkUpdate();
+
 			return this;
 		},
 
@@ -997,6 +1000,8 @@
 			sprite = fg.ISOSprite(name, new_options, this.name);
 
 			this.layers.unshift({name: name, obj: sprite});
+
+			this.checkUpdate();
 
 			return this;
 		},
@@ -1015,7 +1020,19 @@
 
 		// Implementation details
 
-		checkUpdate: fg.noop,
+		checkUpdate: function () {
+			var
+				oldNeedsUpdate = this.needsUpdate
+			;
+
+			if ((this.callbacks.length === 0) && (this.layers.length === 0)) {
+				this.needsUpdate = false;
+			} else {
+				this.needsUpdate = true;
+			}
+
+			this.updateNeedsUpdate(oldNeedsUpdate);
+		},
 
 		update: function () {
 			var
@@ -1139,7 +1156,8 @@
 			group = fg.ISOSpriteGroup(name, new_options, this.name);
 
 			this.layers.push({name: name, obj: group});
-			this.updateList.push({name: name, obj: group});
+
+			this.checkUpdate();
 
 			return group;
 		},
@@ -1154,7 +1172,8 @@
 			group = fg.ISOSpriteGroup(name, new_options, this.name);
 
 			this.layers.unshift({name: name, obj: group});
-			this.updateList.unshift({name: name, obj: group});
+
+			this.checkUpdate();
 
 			return group;
 		},
@@ -1169,7 +1188,8 @@
 			tilemap = fg.ISOTilemap(name, tileDescription, animationList, new_options, this.name);
 
 			this.layers.push({name: name, obj: tilemap});
-			this.updateList.push({name: name, obj: tilemap});
+
+			this.checkUpdate();
 
 			return tilemap;
 		},
@@ -1184,7 +1204,8 @@
 			tilemap = fg.ISOTilemap(name, tileDescription, animationList, new_options, this.name);
 
 			this.layers.unshift({name: name, obj: tilemap});
-			this.updateList.unshift({name: name, obj: tilemap});
+
+			this.checkUpdate();
 
 			return tilemap;
 		}
