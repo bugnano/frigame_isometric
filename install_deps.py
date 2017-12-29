@@ -12,6 +12,7 @@ import subprocess
 
 HgRepos = (
 	'https://bitbucket.org/bugnano/frigame',
+	'https://bitbucket.org/bugnano/frigame_sorted',
 )
 
 
