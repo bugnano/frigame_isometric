@@ -1,7 +1,7 @@
 /*global friGame */
 /*jshint bitwise: true, curly: true, eqeqeq: true, esversion: 3, forin: true, freeze: true, funcscope: true, futurehostile: true, iterator: true, latedef: true, noarg: true, nocomma: true, nonbsp: true, nonew: true, notypeof: false, shadow: outer, singleGroups: false, strict: true, undef: true, unused: true, varstmt: false, eqnull: false, plusplus: true, browser: true, laxbreak: true, laxcomma: true */
 
-// Copyright (c) 2011-2017 Franco Bugnano
+// Copyright (c) 2011-2018 Franco Bugnano
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -66,65 +66,75 @@
 	// ******************************************************************** //
 	// ******************************************************************** //
 
+	function baseISOSpriteMove(method, options) {
+		/*jshint validthis: true */
+		var
+			new_options = options || {},
+			elevation,
+			screen,
+			screen_x,
+			screen_y,
+			screen_obj = fg.s[this.screen_name],
+			my_options = this.options,
+			originx = my_options.originx,
+			originy = my_options.originy,
+			referencex = my_options.referencex,
+			referencey = my_options.referencey,
+			round = fg.truncate
+		;
+
+		fg.PBaseSprite[method].call(this, options);
+
+		if (typeof originx === 'string') {
+			originx = screen_obj[originx];
+		}
+
+		if (typeof originy === 'string') {
+			originy = screen_obj[originy];
+		}
+
+		if (typeof referencex === 'string') {
+			referencex = this[referencex];
+		}
+
+		if (typeof referencey === 'string') {
+			referencey = this[referencey];
+		}
+
+		if (new_options.elevation !== undefined) {
+			elevation = round(new_options.elevation);
+			this.elevation = elevation;
+
+			screen_obj.originy(originy + elevation);
+		} else {
+			elevation = this.elevation;
+		}
+
+		// Step 1: Calculate the screen object position
+		screen = fg.screenFromGrid(this.left + referencex, this.top + referencey);
+		screen_x = round(screen[0]);
+		screen_y = round(screen[1]);
+
+		// Step 2: Move the screen object
+		screen_obj[method]({
+			left: screen_x - originx,
+			top: screen_y - originy - elevation
+		});
+
+		return this;
+	}
+
+
 	fg.PBaseISOSprite = Object.create(fg.PBaseSprite);
 	fg.extend(fg.PBaseISOSprite, {
 		// Public functions
 
 		move: function (options) {
-			var
-				new_options = options || {},
-				elevation,
-				screen,
-				screen_x,
-				screen_y,
-				screen_obj = fg.s[this.screen_name],
-				my_options = this.options,
-				originx = my_options.originx,
-				originy = my_options.originy,
-				referencex = my_options.referencex,
-				referencey = my_options.referencey,
-				round = fg.truncate
-			;
+			return baseISOSpriteMove.call(this, 'move', options);
+		},
 
-			fg.PBaseSprite.move.apply(this, arguments);
-
-			if (typeof originx === 'string') {
-				originx = screen_obj[originx];
-			}
-
-			if (typeof originy === 'string') {
-				originy = screen_obj[originy];
-			}
-
-			if (typeof referencex === 'string') {
-				referencex = this[referencex];
-			}
-
-			if (typeof referencey === 'string') {
-				referencey = this[referencey];
-			}
-
-			if (new_options.elevation !== undefined) {
-				elevation = round(new_options.elevation);
-				this.elevation = elevation;
-
-				screen_obj.originy(originy + elevation);
-			} else {
-				elevation = this.elevation;
-			}
-
-			// Step 1: Calculate the screen object position
-			screen = fg.screenFromGrid(this.left + referencex, this.top + referencey);
-			screen_x = round(screen[0]);
-			screen_y = round(screen[1]);
-
-			// Step 2: Move the screen object
-			screen_obj.move({
-				left: screen_x - originx,
-				top: screen_y - originy - elevation
-			});
-
-			return this;
+		teleport: function (options) {
+			return baseISOSpriteMove.call(this, 'teleport', options);
 		},
 
 		origin: function (originx, originy) {
