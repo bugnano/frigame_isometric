@@ -1,7 +1,7 @@
 /*global friGame */
 /*jshint bitwise: true, curly: true, eqeqeq: true, esversion: 3, forin: true, freeze: true, funcscope: true, futurehostile: true, iterator: true, latedef: true, noarg: true, nocomma: true, nonbsp: true, nonew: true, notypeof: false, shadow: outer, singleGroups: false, strict: true, undef: true, unused: true, varstmt: false, eqnull: false, plusplus: true, browser: true, laxbreak: true, laxcomma: true */
 
-// Copyright (c) 2011-2018 Franco Bugnano
+// Copyright (c) 2011-2019 Franco Bugnano
 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -903,13 +903,20 @@
 				layers = this.layers,
 				len_layers = layers.length,
 				screen_name = this.screen_name,
+				layer,
 				i
 			;
 
 			this.clearing = true;
 
 			for (i = 0; i < len_layers; i += 1) {
-				layers[i].obj.remove();
+				layer = layers[i];
+
+				// This if is necessary, as the userData.remove() function may
+				// do anything, including removing another sprite from this group
+				if (fg.s[layer.name]) {
+					layer.obj.remove();
+				}
 			}
 
 			this.clearing = false;
