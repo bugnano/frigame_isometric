@@ -10,9 +10,9 @@ import shutil
 import subprocess
 
 
-HgRepos = (
-	'https://bitbucket.org/bugnano/frigame',
-	'https://bitbucket.org/bugnano/frigame_sorted',
+GitRepos = (
+	'https://github.com/bugnano/frigame.git',
+	'https://github.com/bugnano/frigame_sorted.git',
 )
 
 
@@ -22,8 +22,8 @@ def main():
 		os.mkdir('deps')
 
 	os.chdir('deps')
-	for repo in HgRepos:
-		subprocess.call(['hg', 'clone', repo])
+	for repo in GitRepos:
+		subprocess.call(['git', 'clone', repo])
 
 
 if __name__ == '__main__':
